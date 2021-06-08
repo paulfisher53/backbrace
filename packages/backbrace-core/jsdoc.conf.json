@@ -3,6 +3,7 @@
         "allowUnknownTags": true
     },
     "plugins": [
+        "node_modules/jsdoc-plugin-intersection",
         "plugins/markdown",
         "node_modules/jsdoc-plugin-typescript"
     ],

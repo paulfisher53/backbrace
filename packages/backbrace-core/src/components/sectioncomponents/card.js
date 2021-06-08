@@ -1,5 +1,6 @@
 import { Container } from '../container';
 import { settings } from '../../settings';
+import { makeObservable, observable, action } from 'mobx';
 
 /**
  * @class Card
@@ -22,12 +23,28 @@ export class Card extends Container {
          * @type {Map<string, import('../field').Field>}
          */
         this.fields = new Map();
+
+        makeObservable(this, {
+            fields: observable,
+            setFields: action
+        });
+    }
+
+    /**
+     * Set the card fields.
+     * @param {Map<string, import('../field').Field>} fields Fields to set.
+     * @returns {void}
+     */
+    setFields(fields) {
+        this.fields = fields;
     }
 
     /** @override */
     async load() {
 
         await super.load();
+
+        let fields = new Map();
 
         // Load the fields.
         for (let fieldDesign of this.design.fields) {
@@ -38,18 +55,19 @@ export class Card extends Container {
             field.design = fieldDesign;
             field.caption = fieldDesign.caption;
             if (this.state.data.length > 0)
-                field.state.data = [this.state.data[0]];
+                field.setState({ data: [this.state.data[0]] });
 
             await field.bind();
 
             // Set the component attributes.
             field.setAttributes();
 
-            this.fields.set(fieldDesign.name, field);
+            fields.set(fieldDesign.name, field);
 
         }
 
-        this.update();
+        this.setFields(fields);
+
     }
 
     /**
@@ -91,7 +109,7 @@ export class Card extends Container {
     renderContent() {
 
         // Set the loading state.
-        for (let f of this.fields.values()) f.state.isLoading = this.state.isLoading;
+        for (let f of this.fields.values()) f.setState({ isLoading: this.state.isLoading });
 
         return this.html`
             <div class="row no-margin"></div>

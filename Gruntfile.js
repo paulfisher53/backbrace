@@ -141,9 +141,9 @@ module.exports = function(grunt) {
       dev: {
         files: [
           { expand: true, cwd: paths.core + '/dist', src: ['**'], dest: paths.docs + '/src/node_modules/@backbrace/core/dist' },
-          { src: './node_modules/prismjs/themes/prism-tomorrow.css', dest: paths.docs + '/dist/node_modules/prismjs/themes/prism-tomorrow.css' },
-          { src: './node_modules/prismjs/prism.js', dest: paths.docs + '/dist/node_modules/prismjs/prism.js' },
-          { src: './node_modules/prismjs/components/prism-json.js', dest: paths.docs + '/dist/node_modules/prismjs/components/prism-json.js' }
+          { src: './node_modules/prismjs/themes/prism-tomorrow.css', dest: paths.docs + '/src/node_modules/prismjs/themes/prism-tomorrow.css' },
+          { src: './node_modules/prismjs/prism.js', dest: paths.docs + '/src/node_modules/prismjs/prism.js' },
+          { src: './node_modules/prismjs/components/prism-json.js', dest: paths.docs + '/src/node_modules/prismjs/components/prism-json.js' }
         ]
       },
       dist: {

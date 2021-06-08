@@ -1,5 +1,6 @@
 {
     "plugins": [
+        "node_modules/jsdoc-plugin-intersection",
         "node_modules/jsdoc-plugin-typescript"
     ],
     "tags": {

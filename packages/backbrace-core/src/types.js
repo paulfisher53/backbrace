@@ -178,7 +178,7 @@ import { AppError } from './errors/app';
 
 /**
  * @typedef componentState
- * @property {Object[]} [data] State data.
+ * @property {any[]} [data] State data.
  * @property {boolean} [hasError] `True` if the component has an error.
  * @property {boolean} [hasFocus] `True` if the component has focus.
  * @property {Error} [error] Error object.

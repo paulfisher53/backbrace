@@ -10,7 +10,6 @@ import { checkBrowser } from './util';
 import './components/preloader';
 
 import { get as getStyle, set as setStyle } from './providers/style';
-import { get as getWindow } from './providers/window';
 import { set as setData } from './providers/data';
 
 /**
@@ -203,8 +202,6 @@ async function loadDataProvider() {
  * @returns {Promise<void>} Returns after the app is started.
  */
 export async function start() {
-
-    const window = getWindow();
 
     if (!appInit) {
 

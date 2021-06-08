@@ -2,6 +2,7 @@ bb-image-lookup {
     .bb-image-lookup-container {
         background-color: var(--bg-hover);
         cursor: pointer;
+        display: inline-block;
     }
     .bb-image-lookup-icon {
         background: #666;

@@ -16,6 +16,7 @@ export class DataTable extends Container {
      */
     static attributes() {
         return new Map([
+            ...super.attributes(),
             ['route', 'string'],
             ['height', 'string']
         ]);
@@ -55,8 +56,6 @@ export class DataTable extends Container {
         }
         return route;
     }
-
-
 
     /** @override */
     renderContent() {

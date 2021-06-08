@@ -4,7 +4,6 @@ import { app } from './app';
 import { error } from './error';
 import { makeSingle } from './util';
 
-import { get as getWindow } from './providers/window';
 import { settings } from './settings';
 import { appState } from './state';
 
@@ -46,7 +45,6 @@ export function route(...args) {
  * @returns {string}
  */
 function pathName() {
-    const window = getWindow();
     return window.location.pathname.replace(settings.base, '');
 }
 
@@ -57,8 +55,7 @@ function pathName() {
  */
 export async function init() {
 
-    const window = getWindow(),
-        loadPageSingle = makeSingle(loadPage);
+    const loadPageSingle = makeSingle(loadPage);
 
     window.onpopstate = async () => {
         var r = match(pathName());
@@ -154,8 +151,7 @@ export function match(path, pathparams) {
 export function processLinks(comp) {
 
     const onclick = (path) => {
-        const window = getWindow(),
-            loadPageSingle = makeSingle(loadPage),
+        const loadPageSingle = makeSingle(loadPage),
             r = match(path);
         if (r) {
             loadPageSingle(r, path);

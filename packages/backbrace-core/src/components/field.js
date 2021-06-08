@@ -1,5 +1,5 @@
 import { Component } from './component';
-import { observable, makeObservable } from 'mobx';
+import { makeObservable, action } from 'mobx';
 
 /**
  * @class Field
@@ -38,35 +38,31 @@ export class Field extends Component {
 
         /**
          * @description
-         * Column layout. Defaults to `col-sm-12 col-md-6`.
+         * Attribute. Column layout. Defaults to `col-sm-12 col-md-6`.
          * @type {string}
          */
         this.cols = 'col-sm-12 col-md-6';
 
         /**
          * @description
-         * Field value.
-         * @type {string}
-         */
-        this._value = '';
-
-        /**
-         * @description
-         * Helper text.
+         * Attribute. Helper text.
          * @type {string}
          */
         this.helpertext = '';
 
         /**
          * @description
-         * Field caption.
+         * Attribute. Field caption.
          * @type {string}
          */
         this.caption = '';
 
+        this.extendState({
+            value: ''
+        });
+
         makeObservable(this, {
-            caption: observable,
-            helpertext: observable
+            setAttributes: action
         });
 
     }
@@ -94,10 +90,10 @@ export class Field extends Component {
             let bindData = this.state.data[0];
             let val = bindData[this.design.bind];
             if (typeof val === 'undefined') {
-                this.state.error = this.error('bind', `Cannot bind property ${this.design.bind}`);
-                this.state.hasError = true;
+                let err = this.error('bind', `Cannot bind property ${this.design.bind}`);
+                this.setState({ error: err, hasError: true });
             } else {
-                this._value = val;
+                this.value = val;
             }
         }
 
@@ -109,7 +105,7 @@ export class Field extends Component {
      * @returns {string}
      */
     get value() {
-        return this._value;
+        return this.state['value'];
     }
 
     /**
@@ -122,16 +118,18 @@ export class Field extends Component {
             let bindData = this.state.data[0];
             bindData[this.design.bind] = newValue;
         }
-        this._value = newValue;
-        this.update();
+        this.setState({ value: newValue });
+    }
+
+    /** @override */
+    componentDidMount() {
+        // Add classes.
+        if (this.cols)
+            this.cols.split(' ').forEach((c) => this.classList.add(c));
     }
 
     /** @override */
     render() {
-
-        // Add classes.
-        if (this.cols)
-            this.cols.split(' ').forEach((c) => this.classList.add(c));
-
+        return this.html`<input value=${this.value}>`;
     }
 }

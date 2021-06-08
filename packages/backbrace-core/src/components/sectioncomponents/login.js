@@ -1,8 +1,6 @@
 import { Card } from './card';
 import { fetch, bind } from '../../data';
 import { navigate } from '../../route';
-import { get as getWindow } from '../../providers/window';
-import { makeObservable, observable } from 'mobx';
 import { settings } from '../../settings';
 import { appState } from '../../state';
 import { get as getData } from '../../providers/data';
@@ -22,6 +20,7 @@ export class Login extends Card {
      */
     static attributes() {
         return new Map([
+            ...super.attributes(),
             ['path', 'string'],
             ['data', 'string'],
             ['loginquery', 'string'],
@@ -64,16 +63,10 @@ export class Login extends Card {
          */
         this.loginbind = '';
 
-        /**
-         * @description
-         * Login error message.
-         * @type {string}
-         */
-        this.errorMessage = '';
-
-        makeObservable(this, {
-            errorMessage: observable
+        this.extendState({
+            loginError: ''
         });
+
     }
 
     /**
@@ -115,51 +108,38 @@ export class Login extends Card {
      */
     async login() {
 
-        // Clear the last error.
-        this.errorMessage = '';
-
         // Generate variables.
-        let variables = {},
-            fieldError = false;
+        let variables = {};
         for (let f of this.fields.values()) {
-            f.helpertext = '';
             if (!f.value) {
-                f.helpertext = `Please enter your ${f.caption}`;
-                fieldError = true;
+                this.setState({ loginError: `Please enter your ${f.caption}` });
+                return;
             }
             variables[f.design.bind || f.design.name] = f.value;
         }
 
-        if (fieldError)
-            return;
+        this.setState({ isLoading: true, loginError: '' });
 
-        this.state.isLoading = true;
+        let data = await fetch(this.data, this.loginquery, variables);
 
-        if (this.data) {
+        if (data) {
 
-            let data = await fetch(this.data, this.loginquery, variables);
-
-            if (data) {
-
-                // Check for errors.
-                if (data?.errors?.[0].message) {
-                    this.errorMessage = data.errors[0].message;
-                    this.state.isLoading = false;
-                    return;
-                }
-
-                // Bind the result.
-                let bindData = bind(this.loginbind, data);
-
-                // Save the auth.
-                appState.auth = bindData;
-                appState.isAuthenticated = true;
-
-                this.state.isLoading = false;
-
-                await this.onLogin();
-
+            // Check for errors.
+            if (data?.errors?.[0].message) {
+                this.setState({ isLoading: false, loginError: data.errors[0].message });
+                return;
             }
+
+            // Bind the result.
+            let bindData = bind(this.loginbind, data);
+
+            // Save the auth.
+            appState.auth = bindData;
+            appState.isAuthenticated = true;
+
+            this.setState({ isLoading: false });
+
+            await this.onLogin();
 
         }
 
@@ -170,7 +150,9 @@ export class Login extends Card {
 
         // Auto login.
         if (settings.auth.refreshTokenURL) {
-            let res = await getWindow().fetch(settings.auth.refreshTokenURL);
+            let res = await window.fetch(settings.auth.refreshTokenURL, {
+                credentials: 'include'
+            });
             if (res.ok) {
 
                 let data = await res.json();
@@ -200,7 +182,7 @@ export class Login extends Card {
     renderContent() {
         return this.html`
             ${super.renderContent()}
-            ${this.errorMessage ? this.html`<span class="bb-login-error">${this.errorMessage}</span>` : ''}
+            ${this.state['loginError'] ? this.html`<span class="bb-login-error">${this.state['loginError']}</span>` : ''}
             <bb-button caption="Login" class="clickable" @click=${this.login}></bb-button>
         `;
     }

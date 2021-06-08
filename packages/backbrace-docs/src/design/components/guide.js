@@ -13,13 +13,13 @@ export default class Guide extends Section {
         if (this.state.hasError)
             return this.html`<bb-error .err=${this.state.error}></bb-error>`;
 
-        this.state.data = this.state.data.filter((d) => d.name === this.params['name']);
+        const data = this.state.data.filter((d) => d.name === this.params['name']);
 
         // Page not found.
-        if (this.state.data.length === 0)
+        if (data.length === 0)
             throw this.error('404', `We can't seem to find the page you're looking for.`);
 
-        const tutorial = this.state.data[0],
+        const tutorial = data[0],
             title = settings().app.title;
 
         // Set the page title.

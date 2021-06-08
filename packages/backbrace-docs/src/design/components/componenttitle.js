@@ -18,6 +18,7 @@ export default class ComponentTitle extends Section {
      */
     static attributes() {
         return new Map([
+            ...super.attributes(),
             ['description', 'string'],
             ['api', 'string']
         ]);

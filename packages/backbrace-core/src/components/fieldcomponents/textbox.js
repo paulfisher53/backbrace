@@ -15,6 +15,7 @@ export class Textbox extends Field {
      */
     static attributes() {
         return new Map([
+            ...super.attributes(),
             ['type', 'string'],
             ['autocomplete', 'string']
         ]);
@@ -45,18 +46,18 @@ export class Textbox extends Field {
     /** @override */
     render() {
 
-        super.render();
-
-        const setFocus = () => { this.state.hasFocus = true; },
-            setBlur = () => { this.state.hasFocus = false; },
-            onChange = (ev) => {
-                this.value = ev.target.value;
-            };
+        const onChange = (ev) => {
+            this.value = ev.target.value;
+        };
 
         return this.html`
             <div class=${this.classMap({ 'bb-field': true, 'bb-field-error': this.state.hasError })}>
                 <input name=${this.design.name} type=${this.type} value=${this.value}
-                    @focus=${setFocus} @blur=${setBlur} @change=${onChange} ?readonly=${this.state.isLoading} autocomplete=${this.autocomplete} />
+                    @focus=${() => this.setState({ hasFocus: true })}
+                    @blur=${() => this.setState({ hasFocus: false })}
+                    @change=${onChange}
+                    ?readonly=${this.state.isLoading}
+                    autocomplete=${this.autocomplete} />
                 <label class=${this.classMap({ 'bb-field-filled': this.value || this.state.hasFocus, 'bb-field-focus': this.state.hasFocus })}>
                     ${this.caption}
                 </label>

@@ -18,6 +18,7 @@ export class ImageLookup extends Field {
      */
     static attributes() {
         return new Map([
+            ...super.attributes(),
             ['icon', 'string']
         ]);
     }
@@ -59,11 +60,12 @@ export class ImageLookup extends Field {
     }
 
     /** @override */
-    firstUpdated() {
+    componentDidMount() {
+
+        super.componentDidMount();
 
         // Setup the file input.
         this.file = $(this).find('input');
-        $(this).on('click', () => this.file[0].click());
     }
 
     /**
@@ -71,7 +73,7 @@ export class ImageLookup extends Field {
      */
     upload() {
 
-        const file = this.file?.[0].files?.[0];
+        const file = this.file?.[0]['files']?.[0];
         const reader = new FileReader();
 
         reader.addEventListener('load', () => {
@@ -94,28 +96,27 @@ export class ImageLookup extends Field {
 
         const style = getStyle();
 
-        super.render();
-
         const addPhoto = this.html`
             <div class="bb-image-lookup-icon">
                 ${style.icon(this.icon)}
             </div>
         `;
 
+        let componentStyle = this.styleMap({
+            backgroundImage: `url(${this.value})`,
+            width: this.width,
+            height: this.height
+        });
+
         return this.html`
             <div class=${this.classMap({ 'bb-field': true, 'bb-field-error': this.state.hasError })}>
                 <input type="file" style="display:none" @change=${this.upload}>
-                <div class="bb-image-lookup-container shape-circle" style=${this.styleMap(
-            {
-                backgroundImage: `url(${this.value})`,
-                width: this.width,
-                height: this.height
-            })}>
-                    ${this.icon ? addPhoto : ''}
-                </div>
-                ${this.state.hasError ? this.html`<small>* ${this.state.error}</small>` : ''}
-                ${this.helpertext && !this.state.hasError ? this.html`<small>${this.helpertext}</small>` : ''}
-            </div>`;
+                <div class="bb-image-lookup-container shape-circle" style=${componentStyle} @click=${() => this.file.trigger('click')}>
+                    ${ this.icon ? addPhoto : ''}
+                </div >
+                ${ this.state.hasError ? this.html`<small>* ${this.state.error}</small>` : ''}
+                ${ this.helpertext && !this.state.hasError ? this.html`<small>${this.helpertext}</small>` : ''}
+            </div > `;
     }
 
 }

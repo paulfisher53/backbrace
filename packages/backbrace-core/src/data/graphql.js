@@ -1,5 +1,4 @@
 import { DataHandler } from '../providers/data';
-import { get as getWindow } from '../providers/window';
 import { appState } from '../state';
 
 /**
@@ -18,8 +17,6 @@ export default class GraphqlHandler extends DataHandler {
      * @returns {Promise<import('../types').dataInfo>}
      */
     async fetch(query, variables) {
-
-        const window = getWindow();
 
         let body = {};
         if (query)

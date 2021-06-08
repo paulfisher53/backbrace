@@ -18,19 +18,6 @@
     "Prism": false
   },
   "rules": {
-    "jsdoc/valid-types": [
-      "error",
-      {
-        "preferType": {
-          "Boolean": "boolean",
-          "Number": "number",
-          "object": "Object",
-          "String": "string",
-          "function": "Function"
-        },
-        "requireReturnDescription": false
-      }
-    ],
     "lit/attribute-value-entities": "error",
     "lit/binding-positions": "error",
     "lit/no-duplicate-template-bindings": "error",

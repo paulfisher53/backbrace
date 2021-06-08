@@ -1,4 +1,4 @@
-import { get as getWindow } from './window';
+/* eslint-disable no-alert */
 
 /**
  * @class StyleHandler
@@ -32,7 +32,6 @@ export class StyleHandler {
      * @returns {Promise<void>}
      */
     async message(msg, title) {
-        let window = getWindow();
         window.alert(msg);
     }
 
@@ -46,9 +45,7 @@ export class StyleHandler {
      * @returns {Promise<boolean>} Returns `true` if the user clicked the yes option.
      */
     async confirm(msg, title, yescaption, nocaption) {
-        let window = getWindow(),
-            ret = window.confirm(msg);
-        return ret;
+        return window.confirm(msg);
     }
 
     /**
@@ -58,7 +55,6 @@ export class StyleHandler {
      * @returns {Promise<void>}
      */
     async error(msg) {
-        let window = getWindow();
         window.alert(msg);
     }
 

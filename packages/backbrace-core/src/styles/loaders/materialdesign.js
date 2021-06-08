@@ -10,7 +10,6 @@ import { MaterialDesignSpinner } from '../components/mdspinner';
 import { settings } from '../../settings';
 
 import { StyleHandler } from '../../providers/style';
-import { get as getWindow } from '../../providers/window';
 
 /**
  * Material design style.
@@ -69,8 +68,6 @@ export default class MaterialDesignStyle extends StyleHandler {
      * @override
      */
     icon(name) {
-
-        const window = getWindow();
 
         let i = window.document.createElement('i');
         i.classList.add('material-icons');

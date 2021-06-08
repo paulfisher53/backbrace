@@ -1,6 +1,5 @@
 import { ShadowComponent } from './shadowcomponent';
 import { fromError } from 'stacktrace-js';
-import { get as getWindow } from '../providers/window';
 import { settings } from '../settings';
 
 /**
@@ -50,7 +49,6 @@ export class ErrorMessage extends ShadowComponent {
          */
         this.showstack = settings.debug;
 
-        this.update();
     }
 
     /**
@@ -80,7 +78,7 @@ export class ErrorMessage extends ShadowComponent {
         if (typeof file === 'undefined')
             return '';
         if (file instanceof Promise) {
-            let f = await getWindow().fetch(path);
+            let f = await window.fetch(path);
             if (f.ok) {
                 file = await f.text();
                 this.cache[path] = file;

@@ -10,6 +10,7 @@
     "allowImportExportEverywhere": true
   },
   "globals": {
+    "window": false,
     "require": false,
     "HTMLElement": false,
     "CustomEvent": false,
@@ -27,19 +28,6 @@
           "ArrowFunctionExpression": false,
           "FunctionExpression": false
         }
-      }
-    ],
-    "jsdoc/valid-types": [
-      "error",
-      {
-        "preferType": {
-          "Boolean": "boolean",
-          "Number": "number",
-          "object": "Object",
-          "String": "string",
-          "function": "Function"
-        },
-        "requireReturnDescription": false
       }
     ],
     "jsdoc/require-returns": [

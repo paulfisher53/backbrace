@@ -1,8 +1,6 @@
 import { settings } from './settings';
 import * as types from './types';
 
-import { get as getWindow } from './providers/window';
-
 /**
  * Design module. Get object designs from JSON files.
  * @module design
@@ -31,8 +29,6 @@ const defaults = {
  * @returns {Promise<import('./types').pageDesign>}
  */
 export async function page(name) {
-
-    const window = getWindow();
 
     // Get the page from a JSON file.
     let d = await window.fetch(settings.dir.design + name);

@@ -5,7 +5,6 @@ import { page } from '../design';
 import { settings } from '../settings';
 
 import { get as style } from '../providers/style';
-import { get as getWindow } from '../providers/window';
 import { get as getData } from '../providers/data';
 
 /**
@@ -94,7 +93,7 @@ export class Page extends Component {
     /**
      * @override
      */
-    firstUpdated() {
+    componentDidMount() {
 
         // Get our sub components.
         this.sectionContainer = $(this).find('.bb-sections');
@@ -152,11 +151,12 @@ export class Page extends Component {
     }
 
     /**
-     * @override
+     * Load the component.
+     * @returns {Promise<void>}
      */
     async load() {
 
-        this.state.isLoading = true;
+        this.setState({ isLoading: true });
 
         // Get the page design.
         let p = await page(this.name);
@@ -225,7 +225,8 @@ export class Page extends Component {
                     ret.push(bindData);
                 }
             }
-            section.state.data = section.state.data.concat(ret);
+
+            section.setState({ data: ret });
 
             // Set the component attributes.
             section.setAttribute('name', sectionDesign.name);
@@ -238,7 +239,7 @@ export class Page extends Component {
 
         }
 
-        this.state.isLoading = false;
+        this.setState({ isLoading: false });
 
         style().pageUpdated(this);
 
@@ -252,8 +253,6 @@ export class Page extends Component {
      * @returns {void}
      */
     setCaption(caption) {
-
-        const window = getWindow();
 
         this.caption = caption;
 

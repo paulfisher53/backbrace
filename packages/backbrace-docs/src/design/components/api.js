@@ -13,23 +13,29 @@ function convertLink(val, links) {
     if (!val)
         return '';
 
-    // Strip jsdoc rubbish.
-    val = val.replace(/module:\S*(~|\/)(\S*\.)*/g, '');
-
     let vals = val.split('|'),
         ret = [],
         encv = '',
         t = '';
     vals.forEach((v) => {
+
+        // Strip jsdoc rubbish.
+        v = v.replace(/module:\S*(~|\/)(\S*\.)*/g, '');
+
+        t = v.replace(/((Readonly|Array|Promise)\.<*|>)/g, '');
+
         encv = v.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        t = v.replace(/Array\.</g, '').replace(/>/g, '');
+
         if (links.indexOf(t) === -1) {
             ret.push(`<span style="color:blue">${encv}</span>`);
         } else {
             ret.push(`<a style="color:#1abc9c;text-decoration:underline;" bb-route="api/${t}">${encv}</a>`);
         }
     });
-    return ret.join('|');
+
+    if (val.indexOf('State') !== -1)
+        return ret.join(' & ');
+    return ret.join(' | ');
 }
 
 function convertParams(params, links) {
@@ -65,13 +71,13 @@ export default class Api extends Section {
         let links = this.state.data.map((val) => val.name);
 
         // Get the module.
-        this.state.data = this.state.data.filter((d) => d.name === this.params['module']);
+        const data = this.state.data.filter((d) => d.name === this.params['module']);
 
         // Page not found.
-        if (this.state.data.length === 0)
+        if (data.length === 0)
             throw this.error('404', `We can't seem to find the page you're looking for.`);
 
-        const api = this.state.data[0],
+        const api = data[0],
             title = settings().app.title,
             prepend = api.kind === 'module' ? `<span style="color:#9b59b6">${api.name}</span>.` : '<span style="color:#9b59b6">this</span>.';
 

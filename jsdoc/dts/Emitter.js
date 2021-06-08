@@ -47,6 +47,10 @@ class Emitter {
         for (const res of this.results) {
             out += dom.emit(res);
         }
+
+        //Fix funciton type.
+        out = out.replace(/\: function/g, ': Function');
+
         return out;
     }
     _parseObjects(docs) {
@@ -337,6 +341,8 @@ class Emitter {
             return dom.type.any;
         }
         if (types.length > 1) {
+            if (names[1].indexOf('State') !== -1)
+                return dom.create.intersection(types);
             return dom.create.union(types);
         }
         return doclet.variable ? dom.type.array(types[0]) : types[0];
@@ -369,6 +375,10 @@ class Emitter {
             t = t.replace(/Map\.\</g, 'Map<');
             return t;
         }
+        if (t.startsWith('AnnotationsMap.<')) {
+            t = t.replace(/AnnotationsMap\.\</g, 'AnnotationsMap<');
+            return t;
+        }
         if (t.startsWith('JQueryPromise.<')) {
             t = t.replace('JQueryPromise.<', 'JQueryPromise<');
             return t;
@@ -384,6 +394,10 @@ class Emitter {
         if (t.startsWith('Class.<')) {
             t = t.replace('Class.<', '').replace('>', '');
             return 'typeof ' + t;
+        }
+        if (t.startsWith('Readonly.<') !== -1) {
+            t = t.replace('Readonly.<', 'Readonly<');
+            return t;
         }
         if (t.startsWith('Object.<')) {
             const matches = t.match(rgxObjectType);
@@ -436,6 +450,9 @@ class Emitter {
         }
         if (t.includes('|')) {
             return dom.create.union(t.split('|').map((v) => this._resolveTypeString(v, doclet, obj)));
+        }
+        if (t.includes('&')) {
+            return dom.create.intersection(t.split('&').map((v) => this._resolveTypeString(v, doclet, obj)));
         }
         if (this.objects[t]) {
             return this.objects[t];

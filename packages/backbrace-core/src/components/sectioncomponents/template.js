@@ -20,6 +20,7 @@ export class Template extends Section {
      */
     static attributes() {
         return new Map([
+            ...super.attributes(),
             ['template', 'string']
         ]);
     }
@@ -38,12 +39,6 @@ export class Template extends Section {
          */
         this.template = '';
 
-        /**
-         * @description
-         * Clean HTML string.
-         * @type {string}
-         */
-        this.cleanHTML = null;
     }
 
     /**
@@ -64,12 +59,12 @@ export class Template extends Section {
         }
 
         // Sanitize the html.
-        this.cleanHTML = dompurify.sanitize(html, {
+        const cleanHTML = dompurify.sanitize(html, {
             ADD_ATTR: ['bb-route', 'bb-route-processed'],
             RETURN_TRUSTED_TYPE: true
         }).toString();
 
-        return this.html`${this.unsafeHTML(this.cleanHTML)}`;
+        return this.html`${this.unsafeHTML(cleanHTML)}`;
     }
 }
 

@@ -5,8 +5,8 @@ import { error as err } from './error';
 import { settings as appSettings } from './settings';
 
 import { get as getErrorHandler } from './providers/error';
-import * as windowprovider from './providers/window';
 import { get as getStyleHandler, set as setStyleHandler } from './providers/style';
+import { get as getDataHandler, set as setDataHandler } from './providers/data';
 
 /**
  * @description
@@ -18,7 +18,6 @@ import { get as getStyleHandler, set as setStyleHandler } from './providers/styl
  * @borrows module:app.serviceWorker as serviceWorker
  * @borrows module:app.start as start
  * @borrows module:app.unload as unload
- * @borrows module:data.fetch as fetch
  * @borrows module:globals~globals as globals
  * @borrows module:log.debug as logDebug
  * @borrows module:log.info as logInfo
@@ -38,11 +37,11 @@ import { get as getStyleHandler, set as setStyleHandler } from './providers/styl
  */
 
 // Leech onto the global error event.
-window().addEventListener('error', function(ev) {
+window.addEventListener('error', function(ev) {
     const err = ev.error || ev;
     getErrorHandler().handleError(err);
 });
-window().addEventListener('unhandledrejection', function(ev) {
+window.addEventListener('unhandledrejection', function(ev) {
     const err = ev.reason;
     getErrorHandler().handleError(err);
 });
@@ -81,25 +80,25 @@ export function publicPath(path) {
 }
 
 /**
- * Get/set the window provider.
- * @param {(Window|Object)} [val] Window instance to set.
- * @returns {Window} Returns the window instance.
- */
-export function window(val) {
-    if (typeof val !== 'undefined')
-        windowprovider.set(val);
-    return windowprovider.get();
-}
-
-/**
  * Get/set the style handler.
- * @param {import('./providers/style').StyleHandler} [val] Set the window handler.
+ * @param {import('./providers/style').StyleHandler} [val] Set the style handler.
  * @returns {import('./providers/style').StyleHandler} Returns the style handler.
  */
 export function style(val) {
     if (typeof val !== 'undefined')
         setStyleHandler(val);
     return getStyleHandler();
+}
+
+/**
+ * Get/set the data handler.
+ * @param {import('./providers/data').DataHandler} [val] Set the data handler.
+ * @returns {import('./providers/data').DataHandler} Returns the data handler.
+ */
+export function data(val) {
+    if (typeof val !== 'undefined')
+        setDataHandler(val);
+    return getDataHandler();
 }
 
 /**
@@ -158,10 +157,6 @@ export {
     store,
     appState
 } from './state';
-
-export {
-    fetch
-} from './data';
 
 export {
     Component

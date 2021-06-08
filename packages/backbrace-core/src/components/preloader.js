@@ -32,9 +32,6 @@ export class Preloader extends ShadowComponent {
          * @type {string}
          */
         this.headercolor = '#000';
-
-        // Update the component straight away.
-        this.update();
     }
 
     /**

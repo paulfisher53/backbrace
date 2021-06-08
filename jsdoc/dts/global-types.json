@@ -71,7 +71,8 @@
         "WebAssembly.RuntimeError",
         "Class",
         "CustomElementConstructor",
-        "unknown"
+        "unknown",
+        "Readonly"
     ],
     "webApi": [
         "ANGLE_instanced_arrays",
@@ -1634,10 +1635,13 @@
         "Window.XSLTProcessor"
     ],
     "backbrace": [
+        "AnnotationsMap",
         "AsyncIterable",
         "AsyncGenerator",
         "Cash",
         "CashStatic",
+        "IActionFactory",
+        "IObservableFactory",
         "Selector",
         "TemplateStringsArray",
         "TemplateResult",

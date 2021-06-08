@@ -4,7 +4,6 @@ import { animate, fadeIn } from '../animation';
 import { Component } from './component';
 
 import { get as getStyle } from '../providers/style';
-import { get as getWindow } from '../providers/window';
 import { settings } from '../settings';
 import { appState } from '../state';
 import { isMobileDevice } from '../util';
@@ -121,9 +120,7 @@ export class Header extends Component {
     /**
      * @override
      */
-    firstUpdated() {
-
-        const window = getWindow();
+    componentDidMount() {
 
         this.menu = $(this).find('.bb-menu');
 

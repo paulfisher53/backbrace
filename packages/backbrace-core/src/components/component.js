@@ -4,13 +4,12 @@ import { classMap } from 'lit-html/directives/class-map';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html';
 import { asyncAppend } from 'lit-html/directives/async-append.js';
 import { asyncReplace } from 'lit-html/directives/async-replace.js';
-import { observable, autorun, runInAction } from 'mobx';
+import { observable, autorun, action, makeObservable, extendObservable } from 'mobx';
 
 import { processLinks } from '../route';
 import { uid } from '../util';
 
 import { get as getErrorHandler } from '../providers/error';
-import { get as getWindow } from '../providers/window';
 import { error } from '../error';
 import { ComponentError } from '../errors/component';
 
@@ -72,13 +71,6 @@ export class Component extends HTMLElement {
         /**
          * @ignore
          * @description
-         * If `true`, this is the first update.
-         */
-        this.firstUpdate = true;
-
-        /**
-         * @ignore
-         * @description
          * Stores the changed properties since the last update.
          * @type {Map<string,string>}
          */
@@ -112,7 +104,7 @@ export class Component extends HTMLElement {
         /**
          * @description
          * Component state.
-         * @type {import('../types').componentState}
+         * @type {Readonly<import('../types').componentState>}
          */
         this.state = observable({
             data: [],
@@ -122,17 +114,41 @@ export class Component extends HTMLElement {
             isLoading: false,
             isLoaded: false
         });
+
+        makeObservable(this, {
+            setState: action
+        });
+    }
+
+    /**
+     * Set the new state of the component.
+     * @param {any} state New component state.
+     * @returns {void}
+     */
+    setState(state) {
+        this.state = Object.assign(this.state, state);
+    }
+
+    /**
+     * Extend the component state.
+     * @param {any} props New state properties.
+     * @returns {void}
+     */
+    extendState(props) {
+        extendObservable(this.state, props);
     }
 
     /**
      * Called when the component is connected to the DOM.
+     * @ignore
      * @returns {void}
      */
     connectedCallback() {
         const autoUpdate = () => {
             if (!this.connected) {
                 this.connected = true;
-                this.update();
+                this.update(true);
+                this.componentDidMount();
             } else {
                 this.update();
             }
@@ -142,11 +158,12 @@ export class Component extends HTMLElement {
 
     /**
      * Called when the component is removed from the DOM.
+     * @ignore
      * @returns {void}
      */
     disconnectedCallback() {
         this.connected = false;
-        this.dispose();
+        this.componentWillUnmount();
     }
 
     /**
@@ -165,7 +182,6 @@ export class Component extends HTMLElement {
      * @returns {void}
      */
     static define(name, comp) {
-        const window = getWindow();
         if (!window.customElements.get(name))
             window.customElements.define(name, comp);
     }
@@ -252,63 +268,61 @@ export class Component extends HTMLElement {
      * @param {Map<string,any>} changedProperties Map of changed properties.
      * @returns {boolean} Return false to skip updating of the component.
      */
-    shouldUpdate(changedProperties) {
+    shouldComponentUpdate(changedProperties) {
         return true;
     }
 
     /**
-     * Called after the element's DOM has been updated the first time, immediately before updated() is called.
-     * @param {Map<string,any>} changedProperties Map of changed properties.
+     * Invoked immediately after a component is mounted (inserted into the DOM).
      * @returns {void}
      */
-    firstUpdated(changedProperties) {
+    componentDidMount() {
     }
 
     /**
-     * Implement to perform post-updating tasks.
+     * Invoked immediately after updating occurs. This method is not called for the initial render.
      * @param {Map<string,any>} changedProperties Map of changed properties.
      * @returns {void}
      */
-    updated(changedProperties) {
+    componentDidUpdate(changedProperties) {
     }
 
     /**
-     * Implement to perform post-removal tasks.
+     * Is invoked immediately before a component is unmounted and destroyed.
      * @returns {void}
      */
-    dispose() {
+    componentWillUnmount() {
     }
 
     /**
      * Update the component.
+     * @property {boolean} [first] First render.
+     * @property {boolean} [skipErrors] Skip error handling.
      * @returns {void}
      */
-    update() {
+    update(first, skipErrors) {
 
         // Only update the component if it is attached to the DOM.
         if (!this.connected)
             return;
 
         // Render the component.
-        if (this.shouldUpdate(this.changedProperties)) {
+        if (first || this.shouldComponentUpdate(this.changedProperties)) {
 
             try {
 
                 renderLit(this.render(), this.container(), { eventContext: this });
 
-                // Is this the first update?
-                if (this.firstUpdate) {
-                    this.firstUpdated(this.changedProperties);
-                    this.firstUpdate = false;
-                }
-
                 // We have updated.
-                this.updated(this.changedProperties);
+                if (!first) {
+                    this.componentDidUpdate(this.changedProperties);
+                }
 
             } catch (e) {
                 // Handle the error if we aren't in the error state.
-                if (!this.state.hasError) {
+                if (!this.state.hasError && !skipErrors) {
                     getErrorHandler().handleError(e);
+                    this.update(false, true);
                     return;
                 }
             }
@@ -363,15 +377,6 @@ export class Component extends HTMLElement {
      */
     classMap(classes) {
         return classMap(classes);
-    }
-
-    /**
-     * Run an action which will update the state.
-     * @param {function():unknown} fn Function to run.
-     * @returns {unknown}
-     */
-    action(fn) {
-        return runInAction(fn);
     }
 
     /**

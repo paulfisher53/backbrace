@@ -1,6 +1,5 @@
 import { DataHandler } from '../providers/data';
 import { settings } from '../settings';
-import { get as getWindow } from '../providers/window';
 
 /**
  * @class JSONHandler
@@ -14,8 +13,6 @@ export default class JSONHandler extends DataHandler {
      * @override
      **/
     async find(options, params, page, section) {
-
-        const window = getWindow();
 
         /**
          * @ignore

@@ -2,7 +2,6 @@ import 'reset-css/reset.css';
 import '../styles/base.scss';
 
 import $ from 'cash-dom';
-import { configure } from 'mobx';
 
 import './apptoolbar';
 import './error';
@@ -15,7 +14,6 @@ import { settings } from '../settings';
 import { isMobileDevice } from '../util';
 import { Page } from './page';
 
-import { get as getWindow } from '../providers/window';
 import { appState } from '../state';
 
 /**
@@ -60,8 +58,6 @@ export class App extends Component {
          * @type {number}
          */
         this.activePage = 0;
-
-        configure({ enforceActions: 'never' });
     }
 
     /**
@@ -82,8 +78,6 @@ export class App extends Component {
      * @returns {Promise<void>}
      */
     async loadPage(name, params = {}) {
-
-        const window = getWindow();
 
         let pge = new Page();
 
@@ -123,8 +117,6 @@ export class App extends Component {
      * @returns {void}
      */
     closePage(id) {
-
-        const window = getWindow();
 
         if (!this.pages.has(id))
             return;
@@ -182,7 +174,7 @@ export class App extends Component {
     /**
      * @override
      */
-    firstUpdated() {
+    componentDidMount() {
 
         // Get our sub components.
         this.main = $(this).find('main');

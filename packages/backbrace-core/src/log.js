@@ -1,8 +1,6 @@
 import { settings } from './settings';
 import { formatString, noop } from './util';
 
-import { get as getWindow } from './providers/window';
-
 /**
  * Logging module. Provides functions to log events.
  * @module log
@@ -17,8 +15,7 @@ import { get as getWindow } from './providers/window';
  */
 function write(msg, type) {
 
-    const window = getWindow(),
-        dte = (new Date()).toISOString();
+    const dte = (new Date()).toISOString();
 
     // Add date and time to string.
     if (typeof msg === 'string')
@@ -83,7 +80,6 @@ export function debug(msg) {
  */
 export function object(obj) {
     obj = obj || {};
-    const window = getWindow();
     if (window.console && window.console.dir) {
         write(obj, 'dir');
         return;

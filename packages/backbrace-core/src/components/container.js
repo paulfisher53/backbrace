@@ -20,13 +20,6 @@ export class Container extends Section {
 
         /**
          * @description
-         * Attribute. Column layout. Defaults to `col-12`.
-         * @type {string}
-         */
-        this.cols = 'col-12';
-
-        /**
-         * @description
          * Actions.
          * @type {Map<string,Button>}
          */
@@ -37,6 +30,8 @@ export class Container extends Section {
      * @override
      */
     async load() {
+
+        super.load();
 
         for (let action of this.design.actions) {
             let button = new Button();

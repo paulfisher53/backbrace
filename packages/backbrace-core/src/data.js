@@ -1,6 +1,5 @@
 import { DateTime } from 'luxon';
 import { settings } from './settings';
-import { get as getWindow } from './providers/window';
 import { appState } from './state';
 
 /**
@@ -36,8 +35,6 @@ export function bind(path, data) {
  * @returns {Promise<any>}
  */
 export async function fetch(url, query, variables) {
-
-    const window = getWindow();
 
     // Load from a JSON file.
     if (url.endsWith('.json')) {

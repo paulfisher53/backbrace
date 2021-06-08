@@ -1,5 +1,3 @@
-import { get as getWindow } from './providers/window';
-
 /**
  * @description
  * Utility functions.
@@ -36,8 +34,6 @@ export function uid() {
  */
 export function checkBrowser() {
 
-  const window = getWindow();
-
   // Check HTML5.
   if (typeof window.document.addEventListener === 'undefined')
     return false;
@@ -57,7 +53,6 @@ export function checkBrowser() {
  * @returns {boolean} `True` if we are using a mobile/tablet device.
  */
 export function isMobileDevice() {
-  const window = getWindow();
   return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i
     .test(window.navigator.userAgent.toLowerCase());
 }
@@ -83,7 +78,6 @@ export function formatString(str, ...args) {
  * @returns {number} Width of the window.
  */
 export function width() {
-  const window = getWindow();
   return window.innerWidth || window.document.documentElement.clientWidth ||
     window.document.body.clientWidth;
 }

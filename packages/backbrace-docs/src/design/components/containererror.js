@@ -6,6 +6,7 @@ export default class ContainerError extends Container {
 
     static attributes() {
         return new Map([
+            ...super.attributes(),
             ['showstack', 'boolean']
         ]);
     }

@@ -1,6 +1,8 @@
+import $ from 'cash-dom';
+
 import { Component } from './component';
-import { makeObservable, observable } from 'mobx';
 import { get as getData } from '../providers/data';
+import { makeObservable, observable } from 'mobx';
 
 /**
  * @class Section
@@ -68,7 +70,7 @@ export class Section extends Component {
     }
 
     /** @overrides */
-    firstUpdated() {
+    componentDidMount() {
         if (this.cols)
             this.cols.split(' ').forEach((c) => this.classList.add(c));
     }
@@ -88,14 +90,17 @@ export class Section extends Component {
      */
     async save() {
 
-        this.state.isLoading = true;
+        this.setState({ isLoading: true });
 
         let ret = await getData().update(this.design.data, this.params, null, this.design, this.state.data);
 
-        this.state.isLoading = false;
+        this.setState({ isLoading: false });
 
         if (ret.error)
             throw this.error('save', ret.error);
+
+        let notify = $('<div class="notify show">Saved!</div>').appendTo('body');
+        window.setTimeout(() => notify.remove(), 2000);
 
     }
 

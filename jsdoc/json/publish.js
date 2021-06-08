@@ -99,6 +99,7 @@ exports.publish = function(data, opts, tutorials) {
                         memberof: doc.name,
                         name: doc.properties[p].name,
                         desc: doc.properties[p].description,
+                        access: doc.properties[p].access,
                         comment: doc.properties[p].comment,
                         optional: doc.properties[p].optional
                     });
@@ -113,6 +114,7 @@ exports.publish = function(data, opts, tutorials) {
                 params: convertParams(doc.params),
                 returns: convertReturns(doc.returns),
                 desc: doc.description,
+                access: doc.access,
                 async: doc.async,
                 examples: doc.examples,
                 scope: doc.scope,
